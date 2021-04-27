@@ -8,7 +8,7 @@ pipeline {
     stages { 
         stage('Cloning our Git') { 
             steps { 
-                git '' 
+                git 'https://github.com/dhruvkmodi/DockerDemo_2021.git' 
             }
         } 
         stage('Building our image') { 
