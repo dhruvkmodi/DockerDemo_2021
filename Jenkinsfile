@@ -4,40 +4,33 @@ pipeline {
     registryCredential = 'dhruvkmodi' 
     image = '' 
   }
-  agent any
-  tools {
-    maven 'Maven 3.6.3'
-  }
-  stages {
-    stage('Build') {
-      steps{
-        sh 'mvn compile -f RiskMeter/pom.xml'
-      } 
-    }
-
-    stage('Test') {
-      steps {
-        sh 'mvn test -f RiskMeter/pom.xml'
-      }
-    }
-
-    stage('Docker Build') {
-      steps {
-        script {
-          image = docker.build registry
-        }
-      }
-    }
-
-    stage('Deploy') {
-      steps {
-        script {
-          docker.withRegistry('', credentials) {
-            image.push()
-          }
-        }
-      }
-    }
-
-  }
+ agent any
+stages {
+stage('Cloning our Git') {
+steps {
+git 'https://github.com/YourGithubAccount/YourGithubRepository.git'
+}
+}
+stage('Building our image') {
+steps{
+script {
+dockerImage = docker.build registry + ":$BUILD_NUMBER"
+}
+}
+}
+stage('Deploy our image') {
+steps{
+script {
+docker.withRegistry( '', registryCredential ) {
+dockerImage.push()
+}
+}
+}
+}
+stage('Cleaning up') {
+steps{
+sh "docker rmi $registry:$BUILD_NUMBER"
+}
+}
+}
 }
