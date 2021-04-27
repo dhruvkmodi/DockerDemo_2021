@@ -2,7 +2,7 @@ pipeline {
   environment { 
     registry = "dhruvkmodi/dockerdemo_2021" 
     registryCredential = 'dhruvkmodi' 
-    image = '' 
+    dockerImage = '' 
   }
  agent any
 stages {
